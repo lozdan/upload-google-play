@@ -27,10 +27,12 @@ export interface EditOptions {
     whatsNewDir?: string;
     mappingFile?: string;
     name?: string;
+    changesNotSentForReview?: boolean
 }
 
 export async function uploadToPlayStore(options: EditOptions, releaseFiles: string[]): Promise<string | undefined> {
     // Check the 'track' for 'internalsharing', if so switch to a non-track api
+    core.info(`options.changesNotSentForReview: ${options.changesNotSentForReview}`);
     if (options.track === 'internalsharing') {
         core.debug("Track is Internal app sharing, switch to special upload api")
         let downloadUrls: string[] = []
@@ -81,10 +83,12 @@ export async function uploadToPlayStore(options: EditOptions, releaseFiles: stri
 
         // Commit the pending Edit
         core.info(`Committing the Edit`)
+        core.info(`options.changesNotSentForReview222222: ${options.changesNotSentForReview}`);
         const res = await androidPublisher.edits.commit({
             auth: options.auth,
             editId: appEdit.data.id!,
-            packageName: options.applicationId
+            packageName: options.applicationId,
+            changesNotSentForReview: true
         });
 
         // Simple check to see whether commit was successful
